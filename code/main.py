@@ -245,6 +245,22 @@ class App(tk.Tk):
             self.press_run.deactivate()
 
     
+    # def handle_toggle_up_down(self):
+    #     if self.toggle_up_down.pressed:
+    #         if not self.toggle_up_down.on:
+    #             print("🔼 Moving UP")
+    #             if self.mode == "Protocol":
+    #                 self.protocol_rt.write_up_down_order(up=1, down=0)
+    #             self.toggle_up_down.toggle_on()
+    #         else:
+    #             print("🔽 Moving DOWN")
+    #             if self.mode == "Protocol":
+    #                 self.protocol_rt.write_up_down_order(up=0, down=1)
+    #             self.toggle_up_down.toggle_off()
+
+    #         self.update_idletasks()
+    #         self.toggle_up_down.pressed = False
+
     def handle_toggle_up_down(self):
         if self.toggle_up_down.pressed:
             if not self.toggle_up_down.on:
@@ -257,6 +273,10 @@ class App(tk.Tk):
                 if self.mode == "Protocol":
                     self.protocol_rt.write_up_down_order(up=0, down=1)
                 self.toggle_up_down.toggle_off()
+
+            # Read up/down status
+            up, down = self.protocol_rt.read_up_down_order()  # ใช้ฟังก์ชันอ่านสถานะ
+            print(f"Up: {up}, Down: {down}")
 
             self.update_idletasks()
             self.toggle_up_down.pressed = False
@@ -591,11 +611,13 @@ class App(tk.Tk):
             self.text_r_pos_num.change_text(r_current)
             self.text_theta_pos_num.change_text(theta_current)
 
-            limit_switch = self.protocol_rt.read_limit_switch_status()
-            self.status_sensor_1.change_text("TRIGGERED" if limit_switch["limit_up"] else "CLEAR",
-                                            color=Color.red if limit_switch["limit_up"] else Color.blue)
-            self.status_sensor_2.change_text("TRIGGERED" if limit_switch["limit_down"] else "CLEAR",
-                                            color=Color.red if limit_switch["limit_down"] else Color.blue)
+
+            
+            up, down = self.protocol_rt.read_up_down_order()
+            self.status_sensor_1.change_text("TRIGGERED" if up else "CLEAR",
+                                            color=Color.red if up else Color.blue)
+            self.status_sensor_2.change_text("TRIGGERED" if down else "CLEAR",
+                                            color=Color.red if down else Color.blue)
 
             if self.operation_mode == "Jog":
                 for i, (entry_r, entry_theta) in enumerate(self.point_entries):
@@ -645,7 +667,7 @@ class App(tk.Tk):
         
         if self.protocol_rt.usb_connect:
             if not self.protocol_rt.usb_connect_before:
-                print("🔌 Reconnected to USB")
+                print("Reconnected to USB")
                 self.handle_connected()
                 self.protocol_rt.usb_connect_before = True
 

@@ -173,23 +173,28 @@ class Protocol_RT(Binary):
         print(f"Write Base System Status: {command}")
 
 
-    def read_limit_switch_status(self):
+    def read_r_theta_actual_motion(self):
         """
-        อ่านสถานะ Limit Switch จากรีจิสเตอร์ 0x03
+        Read the actual motion values from the robot.
         """
-        limit_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x03]))[::-1]
-        limit_up    = limit_status_binary[1]
-        limit_down  = limit_status_binary[0]
+        try:
+            if len(self.register) <= 0x16:
+                print("register ยังไม่พอสำหรับอ่าน r-theta motion")
+                return
 
-        return {
-            "limit_up": limit_up == "1",
-            "limit_down": limit_down == "1"
-        }
+            self.r_position = self.binary_reverse_twos_complement(self.register[0x11]) / 10
+            self.theta_position = self.binary_reverse_twos_complement(self.register[0x12]) / 10
+            self.v_r = self.register[0x13] / 10
+            self.v_theta = self.register[0x14] / 10
+            self.a_r = self.register[0x15] / 10
+            self.a_theta = self.register[0x16] / 10
+        except Exception as e:
+            print("read_r_theta_actual_motion Error:", e)
 
 
     def write_up_down_order(self, up, down):
         if up == down:
-            print("⚠️ Invalid command: UP and DOWN cannot be the same")
+            print("Invalid command: UP and DOWN cannot be the same")
             return
         print(f"Writing Up={up}, Down={down} to registers 0x04 and 0x05")
         try:
@@ -198,6 +203,19 @@ class Protocol_RT(Binary):
             print("Write successful")
         except Exception as e:
             print(f"Error writing to registers: {e}")
+
+    def read_up_down_order(self):
+        try:
+            status = self.client.read_holding_registers(address=0x03, count=1, slave=self.slave_address).registers[0]
+            
+            up = status & 0x01
+            down = (status >> 1) & 0x01
+            
+            return up, down
+        except Exception as e:
+            print(f"Error reading up/down order from register: {e}")
+            return None, None
+
 
 
     def read_r_theta_actual_motion(self):
