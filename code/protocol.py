@@ -4,7 +4,7 @@ from pymodbus.client import ModbusSerialClient as ModbusClient
 from pymodbus.client import ModbusTcpClient
 
 # ----------------------------------- Config this variable before using ----------------------------------- 
-device_port = "COM3"
+device_port = "COM16"
 # example: for os -> device_port = "/dev/cu.usbmodem14103"
 #          for window -> device_port = "COM3"
 # ---------------------------------------------------------------------------------------------------------
@@ -130,7 +130,27 @@ class Protocol_RT(Binary):
             self.routine_normal = False
 
 
-
+    def read_limit_switch_status(self):
+        """
+        Read the status of the limit switches from register 0x03.
+        """
+        try:
+            status = self.client.read_holding_registers(address=0x03, count=1, slave=self.slave_address).registers[0]
+            
+            limit_down = (status & 0x01) > 0
+            limit_up = (status & 0x02) > 0
+            
+            return {
+                "limit_up": limit_up,
+                "limit_down": limit_down
+            }
+        except Exception as e:
+            print(f"Error reading limit switch status: {e}")
+            return {
+                "limit_up": False,
+                "limit_down": False
+            }
+    
     def read_heartbeat(self):
         """
         Read heartbeat value from robot; expects 22881 for "Ya"
@@ -230,7 +250,7 @@ class Protocol_RT(Binary):
         self.a_theta = self.register[0x16] / 10
 
     def read_r_theta_moving_status(self):
-        """ อ่านค่าการเคลื่อนที่ของ r และ theta """
+        """ Read motion of r and theta status"""
         self.r_theta_moving_status_before = self.r_theta_moving_status
         moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
 
@@ -259,15 +279,18 @@ class Protocol_RT(Binary):
 
         print("Target Positions Read:", self.target_positions)
     
-    def write_goal_point(self, r, theta):
-        """
-        Write goal position (r, theta) to the robot.
-        """
-        try:
-            self.client.write_register(address=0x30, value=int(r * 10), slave=self.slave_address)
-            self.client.write_register(address=0x31, value=int(theta * 10), slave=self.slave_address)
-            print(f"Goal Point Sent: r={r} mm, theta={theta}°")
-        except Exception as e:
-            print(f"Goal Point Send Failed: {e}")
+def write_goal_point(self, r, theta):
+    """
+    Write goal position (r, theta) to the robot and trigger Go To Target command.
+    """
+    try:
+        self.client.write_register(address=0x30, value=int(r * 10), slave=self.slave_address)
+        self.client.write_register(address=0x31, value=int(theta * 10), slave=self.slave_address)
+        
+        self.client.write_register(address=0x01, value=0x08, slave=self.slave_address)
+        
+        print(f"Goal Point Sent: r={r} mm, theta={theta}°")
+    except Exception as e:
+        print(f"Goal Point Send Failed: {e}")
 
 

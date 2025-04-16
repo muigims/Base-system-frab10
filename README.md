@@ -15,19 +15,6 @@ $~$
 ## Configuration 
 You might need to change **`device_port`** same as display in Device Manager the **`protocal.py`** file.
 
-$~$
-
-## Operational Modes
-
-1. Jog Mode
-- Switch the Operation Mode radio button to Jog Mode.
-- Use manual controls (e.g., Up/Down toggles, or any future jog controls) to move the robot’s R and θ axes incrementally.
-
-2. Point Mode
-- Switch the Operation Mode radio button to Point Mode.
-- Enter positions for R (0–500 mm) and θ (–180° to 180°) in the Point entries.
-- Specify speed (v_r, v_θ) and acceleration (a_r, a_θ) in the fields near the bottom of the GUI.
-- Click Run to command the robot to move through the listed positions sequentially.
 
 $~$
 
@@ -42,17 +29,19 @@ $~$
 - The GUI will appear for controlling the R-Theta Robot
 
 ### 2. Operation Modes
-There are two main control modes in the GUI:
+There are two main control modes available in the system:
 
-1. **Jog Mode**
-   - Allows manual incremental control of the R and Theta axes
-   - Toggle this mode via the "Jog Mode" radio button
+1. **Jog Mode**  
+   - Activate this mode by selecting the Jog Mode radio button.  
+   - Allows manual incremental movement of the robot’s R and Theta axes using available controls (e.g., Up/Down toggle).  
+   - Suitable for fine adjustments or manual testing.
 
-2. **Point Mode**
-   - Allows you to define up to 10 (r, theta) target points
-   - Input desired R (0–500 mm) and Theta (-180° to 180°) values
-   - Set speed (v_r, v_theta) and acceleration (a_r, a_theta)
-   - Press "Run" to execute the trajectory
+2. **Point Mode**  
+   - Activate this mode by selecting the Point Mode radio button.  
+   - Input target R (0–500 mm) and θ (–180° to 180°) values in the designated fields.  
+   - Optionally set the speed (*v_r*, *v_θ*) and acceleration (*a_r*, *a_θ*) parameters.  
+   - Click Run to move the robot to the defined position(s).
+
 
 ### 3. Workflow Steps
 1. Select the operation mode (Jog or Point)
@@ -61,6 +50,9 @@ There are two main control modes in the GUI:
 4. Set desired speed and acceleration values
 5. Click "Run" to execute the motion
 6. Observe sensor status and live position/speed updates in the right panel
+
+
+
 
 ---
 
@@ -196,3 +188,5 @@ These registers store up to **10 points** of preset R and Theta values.
 
 
 $~$
+
+

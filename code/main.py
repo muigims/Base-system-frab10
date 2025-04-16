@@ -22,7 +22,7 @@ class App(tk.Tk):
         # self.mode = "Graphic"
         self.mode = "Protocol"
         # Define os
-        # self.os = platform.platform()[0].upper()
+        self.os = platform.platform()[0].upper()
         # Window Dimension
         window_width = 900
         window_height = 800
@@ -204,9 +204,6 @@ class App(tk.Tk):
         self.canvas_field.bind("<Button-1>", lambda event: self.handle_press_run(event), add='+')
 
 
-
-    
-
     def handle_jog_mode_movement(self, r, theta):
         x, y = self.polar_to_cartesian(r, theta)  
         if len(self.jog_points) >= 10:
@@ -214,8 +211,8 @@ class App(tk.Tk):
         
         self.jog_points.append((x, y))
         self.plot_graph()
-        
-        print(f"[Jog Mode] บันทึกจุดที่ {len(self.jog_points)}/10: r = {r}, theta = {theta}, x = {x:.2f}, y = {y:.2f}")
+        print(f"[Jog Mode] Saved point {len(self.jog_points)}/10: r = {r}, theta = {theta}, x = {x:.2f}, y = {y:.2f}")
+
 
     def handle_radio_operation(self, event=None):
         if self.radio_point.on and self.operation_mode != "Point":
@@ -244,23 +241,6 @@ class App(tk.Tk):
             self.point_mode_points.clear() 
             self.press_run.deactivate()
 
-    
-    # def handle_toggle_up_down(self):
-    #     if self.toggle_up_down.pressed:
-    #         if not self.toggle_up_down.on:
-    #             print("🔼 Moving UP")
-    #             if self.mode == "Protocol":
-    #                 self.protocol_rt.write_up_down_order(up=1, down=0)
-    #             self.toggle_up_down.toggle_on()
-    #         else:
-    #             print("🔽 Moving DOWN")
-    #             if self.mode == "Protocol":
-    #                 self.protocol_rt.write_up_down_order(up=0, down=1)
-    #             self.toggle_up_down.toggle_off()
-
-    #         self.update_idletasks()
-    #         self.toggle_up_down.pressed = False
-
     def handle_toggle_up_down(self):
         if self.toggle_up_down.pressed:
             if not self.toggle_up_down.on:
@@ -275,7 +255,7 @@ class App(tk.Tk):
                 self.toggle_up_down.toggle_off()
 
             # Read up/down status
-            up, down = self.protocol_rt.read_up_down_order()  # ใช้ฟังก์ชันอ่านสถานะ
+            up, down = self.protocol_rt.read_up_down_order()  
             print(f"Up: {up}, Down: {down}")
 
             self.update_idletasks()
@@ -569,7 +549,8 @@ class App(tk.Tk):
 
         if self.operation_mode == "Jog":
             for i, (r, theta) in enumerate(self.jog_points):
-                print(f"[Jog Mode] บันทึกจุดที่ {i+1}: r = {r}, theta = {theta}")
+                print(f"[Jog Mode] Saved point {i+1}: r = {r}, theta = {theta}")
+
                 x, y = self.polar_to_cartesian(r, theta)
 
                 scale_factor = 1
@@ -585,7 +566,8 @@ class App(tk.Tk):
 
         elif self.operation_mode == "Point":
             for r, theta in self.point_mode_points:
-                print(f"[Point Mode] วาดจุดที่ r = {r}, theta = {theta}")
+                print(f"[Point Mode] Drawing point at r = {r}, theta = {theta}")
+
                 x, y = self.polar_to_cartesian(r, theta)
 
                 scale_factor = 1
@@ -704,8 +686,7 @@ class App(tk.Tk):
             print("Running")
         if self.homing:
             print("Homing")
-        # if self.jogging:
-        #     print("Jogging Mode Active")
+
 
 if __name__ == "__main__":
     print("Starting Base System...") 
