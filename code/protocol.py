@@ -183,8 +183,7 @@ class Protocol_RT(Binary):
             self.base_system_status_register = 0b0100
         elif command == "Go To Target":
             self.base_system_status_register = 0b1000
-        elif command == "Stop":
-            self.base_system_status_register = 0b10000
+        
         else:
             print(f"Invalid Command: {command}")
             return  
@@ -262,11 +261,11 @@ class Protocol_RT(Binary):
             self.r_theta_moving_status = "Run Point Mode"
         elif moving_status_binary[3] == "1":
             self.r_theta_moving_status = "Go To Target"
-        elif moving_status_binary[4] == "1":
-            self.r_theta_moving_status = "Stop"
         else:
             self.r_theta_moving_status = "Idle"
 
+        if hasattr(self, 'app'):
+            self.app.handle_ui_change() 
 
     def read_target_positions(self):
         """
@@ -279,18 +278,18 @@ class Protocol_RT(Binary):
 
         print("Target Positions Read:", self.target_positions)
     
-def write_goal_point(self, r, theta):
-    """
-    Write goal position (r, theta) to the robot and trigger Go To Target command.
-    """
-    try:
-        self.client.write_register(address=0x30, value=int(r * 10), slave=self.slave_address)
-        self.client.write_register(address=0x31, value=int(theta * 10), slave=self.slave_address)
-        
-        self.client.write_register(address=0x01, value=0x08, slave=self.slave_address)
-        
-        print(f"Goal Point Sent: r={r} mm, theta={theta}°")
-    except Exception as e:
-        print(f"Goal Point Send Failed: {e}")
+    def write_goal_point(self, r, theta):
+        """
+        Write goal position (r, theta) to the robot and trigger Go To Target command.
+        """
+        try:
+            self.client.write_register(address=0x30, value=int(r * 10), slave=self.slave_address)
+            self.client.write_register(address=0x31, value=int(theta * 10), slave=self.slave_address)
+            
+            self.client.write_register(address=0x01, value=0x08, slave=self.slave_address)
+            
+            print(f"Goal Point Sent: r={r} mm, theta={theta}°")
+        except Exception as e:
+            print(f"Goal Point Send Failed: {e}")
 
 

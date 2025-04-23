@@ -241,22 +241,27 @@ class App(tk.Tk):
             self.point_mode_points.clear() 
             self.press_run.deactivate()
 
+    
     def handle_toggle_up_down(self):
         if self.toggle_up_down.pressed:
-            if not self.toggle_up_down.on:
-                print("🔼 Moving UP")
-                if self.mode == "Protocol":
-                    self.protocol_rt.write_up_down_order(up=1, down=0)
-                self.toggle_up_down.toggle_on()
-            else:
-                print("🔽 Moving DOWN")
-                if self.mode == "Protocol":
-                    self.protocol_rt.write_up_down_order(up=0, down=1)
-                self.toggle_up_down.toggle_off()
+            if self.mode == "Graphic":
+                if not self.toggle_up_down.on:
+                    print("🔼 Moving UP (Graphic Mode)")
+                else:
+                    print("🔽 Moving DOWN (Graphic Mode)")
+                self.toggle_up_down.toggle_on() if not self.toggle_up_down.on else self.toggle_up_down.toggle_off()
 
-            # Read up/down status
-            up, down = self.protocol_rt.read_up_down_order()  
-            print(f"Up: {up}, Down: {down}")
+            elif self.mode == "Protocol" and self.protocol_rt is not None:
+                if not self.toggle_up_down.on:
+                    print("🔼 Moving UP")
+                    self.protocol_rt.write_up_down_order(up=1, down=0)
+                else:
+                    print("🔽 Moving DOWN")
+                    self.protocol_rt.write_up_down_order(up=0, down=1)
+
+                # Read up/down status
+                up, down = self.protocol_rt.read_up_down_order()  
+                print(f"Up: {up}, Down: {down}")
 
             self.update_idletasks()
             self.toggle_up_down.pressed = False
@@ -356,7 +361,7 @@ class App(tk.Tk):
                     
     def handle_press_home(self, event=None):
         """
-        This function handles when user press "Home" button (กลับไปที่ตำแหน่ง Home)
+        This function handles when user press "Home" button
         """
         if self.press_home.pressed:
             print("Returning to Home Position...")
@@ -428,7 +433,7 @@ class App(tk.Tk):
                     self.point_mode_points.clear()  
                     self.point_mode_points.append((r, theta))  
 
-                    print(f"[Point Mode] ส่งหุ่นยนต์ไปที่ r = {r}, theta = {theta}")
+                    print(f"[Point Mode] Sending the robot to r = {r}, theta = {theta}")
 
                     if self.mode == "Protocol" and self.protocol_rt is not None:
                         self.protocol_rt.write_goal_point(r, theta)
@@ -610,16 +615,16 @@ class App(tk.Tk):
                     entry_theta.set_text(str(theta_current))
                     break 
             
-        self.text_r_pos_num.change_text(self.protocol_rt.r_position if hasattr(self.protocol_rt, 'r_position') else "N/A")
-        self.text_theta_pos_num.change_text(self.protocol_rt.theta_position if hasattr(self.protocol_rt, 'theta_position') else "N/A")
+            self.text_r_pos_num.change_text(self.protocol_rt.r_position if hasattr(self.protocol_rt, 'r_position') else "N/A")
+            self.text_theta_pos_num.change_text(self.protocol_rt.theta_position if hasattr(self.protocol_rt, 'theta_position') else "N/A")
 
-        self.text_r_spd_num.change_text(self.protocol_rt.v_r if hasattr(self.protocol_rt, 'v_r') else "N/A")  
-        self.text_theta_spd_num.change_text(self.protocol_rt.v_theta if hasattr(self.protocol_rt, 'v_theta') else "N/A")  
+            self.text_r_spd_num.change_text(self.protocol_rt.v_r if hasattr(self.protocol_rt, 'v_r') else "N/A")  
+            self.text_theta_spd_num.change_text(self.protocol_rt.v_theta if hasattr(self.protocol_rt, 'v_theta') else "N/A")  
 
-        self.text_r_acc_num.change_text(self.protocol_rt.a_r if hasattr(self.protocol_rt, 'a_r') else "N/A")  
-        self.text_theta_acc_num.change_text(self.protocol_rt.a_theta if hasattr(self.protocol_rt, 'a_theta') else "N/A")  
+            self.text_r_acc_num.change_text(self.protocol_rt.a_r if hasattr(self.protocol_rt, 'a_r') else "N/A")  
+            self.text_theta_acc_num.change_text(self.protocol_rt.a_theta if hasattr(self.protocol_rt, 'a_theta') else "N/A")  
 
-        self.text_rt_status_value.change_text(self.protocol_rt.r_theta_moving_status if hasattr(self.protocol_rt, 'r_theta_moving_status') else "N/A") 
+            self.text_rt_status_value.change_text(self.protocol_rt.r_theta_moving_status if hasattr(self.protocol_rt, 'r_theta_moving_status') else "N/A") 
 
 
         if self.protocol_rt.r_theta_moving_status == "Idle":
