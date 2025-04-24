@@ -255,10 +255,11 @@ class App(tk.Tk):
                 if not self.toggle_up_down.on:
                     print("🔼 Moving UP")
                     self.protocol_rt.write_up_down_order(up=1, down=0)
+                    self.toggle_up_down.toggle_on()
                 else:
                     print("🔽 Moving DOWN")
                     self.protocol_rt.write_up_down_order(up=0, down=1)
-
+                    self.toggle_up_down.toggle_off()
                 # Read up/down status
                 up, down = self.protocol_rt.read_up_down_order()  
                 print(f"Up: {up}, Down: {down}")
