@@ -236,7 +236,6 @@ class Protocol_RT(Binary):
             return None, None
 
 
-
     def read_r_theta_actual_motion(self):
         """
         Read the actual motion values from the robot.

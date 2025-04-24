@@ -151,13 +151,30 @@ The position, speed, and acceleration sent to the base system should contain onl
 > Example: If the value of the position you want to send is '123.4', multiply it by 10 to get '1234', and send this value to the address z-axis Actual Position (0x11). This will appear in the Base system as '123.4'.
 ---
 
-6. **Target Position Registers (0x20 – 0x29)**
-These registers store up to **10 points** of preset R and Theta values.
-- Values are read from firmware using `read_target_positions()`.
-- Each value is stored in 16-bit signed format and scaled ×10.
+6. **Target Position Registers (0x20 – 0x-39)**
+These registers store **10 points** of preset **R** (radius) and **Theta** (angle) values that are recorded by the robot.
 
-> These points are typically used to visualize or simulate multiple positions along a planned path.
+- Each target position consists of **two consecutive registers**: one for **R** (radius) and the other for **Theta** (angle).
+- The values stored are in **16-bit signed format** and are **scaled by 10** (i.e., the actual values are divided by 10 to match the real-world units for **R** and **Theta**).
+- These registers are read from the robot using the `read_target_positions()` function, where each pair of registers corresponds to a specific point in the robot’s planned path.
+#### **Register Address Mapping**:
+- **`0x20 - 0x39`**: Stores the values for **Target Positions 1 to 10**.
+  
+  Each point is stored as **two consecutive 16-bit signed integers**:
+  - **`0x20`**: `R1` (radius of point 1)
+  - **`0x21`**: `Theta1` (angle of point 1)
+  - **`0x22`**: `R2` (radius of point 2)
+  - **`0x23`**: `Theta2` (angle of point 2)
+  - ...
+  - **`0x38`**: `R10` (radius of point 10)
+  - **`0x39`**: `Theta10` (angle of point 10)
 
+#### **Data Format**:
+- The values in the registers are **signed 16-bit integers**, which are then converted to the actual **distance** (in mm) and **angle** (in degrees) by dividing by **10**.
+
+  **Example**:
+  - If **`register[0x20]`** stores the value **1505**, the actual **R** value will be **1505 / 10 = 150.5 mm**.
+  - If **`register[0x21]`** stores the value **302**, the actual **Theta** value will be **302 / 10 = 30.2°**.
 
 $~$
 
