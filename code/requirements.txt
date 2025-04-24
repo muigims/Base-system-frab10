@@ -1,5 +1,6 @@
 tk
 keyboard
 pymodbus==3.3.0
+Python 3.12.3
 pyserial
 Pillow

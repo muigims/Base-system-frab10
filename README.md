@@ -32,47 +32,19 @@ $~$
 There are two main control modes available in the system:
 
 1. **Jog Mode**  
-   - Activate this mode by selecting the Jog Mode radio button.  
-   - Allows manual incremental movement of the robot’s R and Theta axes using available controls (e.g., Up/Down toggle).  
-   - Suitable for fine adjustments or manual testing.
+   - Activate this mode by clicking the **Jog Mode** radio button in the GUI.
+   - The user manually controls the robot’s **R** and **Theta** axes using a **joystick**.
+   - The current values of **R** and **Theta** are displayed live in the GUI.
+   - The user moves the robot to different positions and **records 10 positions manually**.
+   - After recording, the robot’s positions are **sent to the Base System**.
+   - The Base System will then **automatically command the robot to move through the saved positions in order**.
 
 2. **Point Mode**  
-   - Activate this mode by selecting the Point Mode radio button.  
-   - Input target R (0–500 mm) and θ (–180° to 180°) values in the designated fields.  
-   - Optionally set the speed (*v_r*, *v_θ*) and acceleration (*a_r*, *a_θ*) parameters.  
-   - Click Run to move the robot to the defined position(s).
+   - Activate this mode by clicking the **Point Mode** radio button in the GUI.
+   - Enter the target values for **R** (0–500 mm) and **Theta** (–180° to 180°) into the input fields.
+   - Press **Run** to send the values to the Base System.
+   - The robot will **automatically move to the specified position**.
 
-
-### 3. Workflow Steps
-1. Select the operation mode (Jog or Point)
-2. Press "Home" to reset the robot to its initial position
-3. (In Point Mode) Input valid R and Theta values for each point
-4. Set desired speed and acceleration values
-5. Click "Run" to execute the motion
-6. Observe sensor status and live position/speed updates in the right panel
-
-
-
-
----
-
-## Testing Methods
-
-1. **Jog Mode Testing**:
-   - Select "Jog Mode"
-   - Use the toggle button (e.g., Up/Down) to move the robot
-
-2. **Point Mode Testing**:
-   - Select "Point Mode"
-   - Enter values for Points 1–10
-   - Press "Run" to test the motion across multiple targets
-
-3. **Sensor Feedback**:
-   - Sensor 1 and Sensor 2 (Reed Switches) monitor gripper mechanism status
-   - Displayed as ON/OFF in the GUI
-
-4. **Live Data Display**:
-   - Monitor r_position, theta_position, speed, and acceleration in real-time
 
 ---
 
@@ -94,9 +66,9 @@ There are two main control modes available in the system:
 | `0x14`      | Theta-Axis Actual Speed (deg/s*10)          | Read       |
 | `0x15`      | R-Axis Acceleration (mm/s²*10)              | Read       |
 | `0x16`      | Theta-Axis Acceleration (deg/s²*10)         | Read       |
-| `0x20–0x29` | Target Positions 1–10 (mm or deg *10)       | Read       |
-| `0x30`      | Goal R Position                             | Write      |
-| `0x31`      | Goal Theta Position                         | Write      |
+| `0x20–0x39` | Target Positions 1–10                       | Read       |
+| `0x40`      | Goal R Position                             | Write      |
+| `0x41`      | Goal Theta Position                         | Write      |
 
 ### 2. Bit Positions (Base System Status - 0x01)
 
@@ -129,7 +101,7 @@ This register is used to command the robot’s high-level actions such as homing
 | 1   | 0000 0000 0000 0010           | 2       | Run Jog Mode    | Enable Jog Mode for manual/incremental control                             |
 | 2   | 0000 0000 0000 0100           | 4       | Run Point Mode  | Enable Point Mode for input-based movement                                 |
 | 3   | 0000 0000 0000 1000           | 8       | Go To Target    | Command the robot to go to the specified target (goal point)               |
-| 4   | 0000 0000 0001 0000           | 16      | Stop            | Halt all ongoing operations                                                |
+                                            |
 
 > **Example:** Pressing the `Home` button sets bit 0 to 1, which sends a decimal value `1` to register `0x01`.
 
