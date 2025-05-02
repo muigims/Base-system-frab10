@@ -225,8 +225,9 @@ class App(tk.Tk):
             self.entry_theta.show()
             self.entry_r.enable()
             self.entry_theta.enable()
-
+            self.protocol_rt.write_base_system_status("Run Point Mode") 
             self.press_run.activate()
+            self.press_run.show()
 
         elif self.radio_jog.on and self.operation_mode != "Jog":
             self.operation_mode = "Jog"
@@ -237,9 +238,11 @@ class App(tk.Tk):
             self.entry_theta.hide()
             self.entry_r.disable()
             self.entry_theta.disable()
-
+            self.protocol_rt.write_base_system_status("Run Jog Mode") 
             self.point_mode_points.clear() 
             self.press_run.deactivate()
+            self.press_run.hide()
+            
 
     
     def handle_toggle_up_down(self):
@@ -602,10 +605,10 @@ class App(tk.Tk):
 
             
             up, down = self.protocol_rt.read_up_down_order()
-            self.status_sensor_1.change_text("TRIGGERED" if up else "CLEAR",
-                                            color=Color.red if up else Color.blue)
-            self.status_sensor_2.change_text("TRIGGERED" if down else "CLEAR",
+            self.status_sensor_1.change_text("TRIGGERED" if down else "CLEAR",
                                             color=Color.red if down else Color.blue)
+            self.status_sensor_2.change_text("TRIGGERED" if up else "CLEAR",
+                                            color=Color.red if up else Color.blue)
 
             if self.operation_mode == "Jog":
                 for i, (entry_r, entry_theta) in enumerate(self.point_entries):

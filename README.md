@@ -13,7 +13,7 @@ cd code && pip install -r requirements.txt
 $~$
 
 ## Configuration 
-You might need to change **`device_port`** same as display in Device Manager the **`protocal.py`** file.
+You might need to change **`device_port`** same as display in Device Manager the **`protocol.py`** file.
 
 
 $~$
@@ -36,13 +36,15 @@ There are two main control modes available in the system:
    - The user manually controls the robot’s **R** and **Theta** axes using a **joystick**.
    - The current values of **R** and **Theta** are displayed live in the GUI.
    - The user moves the robot to different positions and **records 10 positions manually**.
-   - After recording, the robot’s positions are **sent to the Base System**.
-   - The Base System will then **automatically command the robot to move through the saved positions in order**.
+   - After recording, the robot’s positions are **sent to the Base System** just for acknowledgment (no movement yet).
+   - Then, press the **Run button on the joystick** to command the robot to **move through the 10 recorded positions sequentially**.
+
+
 
 2. **Point Mode**  
    - Activate this mode by clicking the **Point Mode** radio button in the GUI.
    - Enter the target values for **R** (0–500 mm) and **Theta** (–180° to 180°) into the input fields.
-   - Press **Run** to send the values to the Base System.
+   - Press **Run** to send the values to the robot.
    - The robot will **automatically move to the specified position**.
 
 
@@ -177,5 +179,3 @@ These registers store **10 points** of preset **R** (radius) and **Theta** (angl
   - If **`register[0x21]`** stores the value **302**, the actual **Theta** value will be **302 / 10 = 30.2°**.
 
 $~$
-
-
